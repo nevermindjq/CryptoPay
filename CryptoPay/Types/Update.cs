@@ -16,20 +16,20 @@ public sealed class Update
     /// <summary>
     /// Non-unique update ID.
     /// </summary>
-    [JsonRequired]
+    [JsonRequired, JsonPropertyName("update_id")]
     public long UpdateId { get; set; }
 
     /// <summary>
     /// Webhook update type.Supported update types:
     /// <see cref="UpdateTypes.invoice_paid" /> – the update sent after an invoice is paid.
     /// </summary>
-    [JsonRequired]
+    [JsonRequired, JsonPropertyName("update_type")]
     public UpdateTypes UpdateType { get; set; }
 
     /// <summary>
     /// Date the request was sent in ISO 8601 format.
     /// </summary>
-    [JsonRequired]
+    [JsonRequired, JsonPropertyName("request_date")]
     public DateTime RequestDate { get; set; }
 
     /// <summary>
