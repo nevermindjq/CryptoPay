@@ -35,7 +35,8 @@ You can setup net `apiUrl` (defaults to `https://pay.crypt.bot/`) and `HttpClien
 var cryptoPayClient = new CryptoPayClient(
     token: "1234:XXXXXXXX",
     httpClient: httpClient,
-    apiUrl: "https://testnet-pay.crypt.bot/");
+    apiUrl: "https://testnet-pay.crypt.bot/"
+);
 ```
 
  Net     | Bot                                                          | Hostname                         
