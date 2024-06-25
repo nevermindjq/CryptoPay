@@ -16,26 +16,26 @@ namespace CryptoPay.Types {
 		/// <summary>
 		///     Non-unique update ID.
 		/// </summary>
-		[JsonRequired, JsonPropertyName("update_id")]
+		[JsonRequired, JsonPropertyName("update_id"), JsonPropertyOrder(0)]
 		public long UpdateId { get; set; }
 
 		/// <summary>
 		///     Webhook update type.Supported update types:
 		///     <see cref="UpdateTypes.invoice_paid" /> – the update sent after an invoice is paid.
 		/// </summary>
-		[JsonRequired, JsonPropertyName("update_type")]
+		[JsonRequired, JsonPropertyName("update_type"), JsonPropertyOrder(1)]
 		public UpdateTypes UpdateType { get; set; }
 
 		/// <summary>
 		///     Date the request was sent in ISO 8601 format.
 		/// </summary>
-		[JsonRequired, JsonPropertyName("request_date")]
+		[JsonRequired, JsonPropertyName("request_date"), JsonPropertyOrder(2)]
 		public DateTime RequestDate { get; set; }
 
 		/// <summary>
 		///     Payload of the update.
 		/// </summary>
-		[JsonPropertyName("payload")]
+		[JsonPropertyName("payload"), JsonPropertyOrder(3)]
 		public Invoice Payload { get; set; }
 
 		/// <summary>
@@ -43,7 +43,12 @@ namespace CryptoPay.Types {
 		/// </summary>
 		/// <returns></returns>
 		public override string ToString() {
-			return JsonSerializer.Serialize(this);
+			return JsonSerializer.Serialize(
+				this,
+				new JsonSerializerOptions {
+					DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+				}
+			);
 		}
 	}
 }

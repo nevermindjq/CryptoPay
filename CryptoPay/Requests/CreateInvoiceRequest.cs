@@ -18,8 +18,8 @@ namespace CryptoPay.Requests {
 		/// </summary>
 		/// <param name="amount">Amount of the invoice in float. For example: 125.50</param>
 		/// <param name="currency_type">
-		///     Optional. Type of the price, can be <see cref="CurrencyTypes.Crypto" /> or
-		///     <see cref="CurrencyTypes.Fiat" />. Defaults to crypto.
+		///     Optional. Type of the price, can be <see cref="CurrencyTypes.crypto" /> or
+		///     <see cref="CurrencyTypes.fiat" />. Defaults to crypto.
 		/// </param>
 		/// <param name="asset">
 		///     Currency code.
@@ -30,12 +30,12 @@ namespace CryptoPay.Requests {
 		///     </remarks>
 		/// </param>
 		/// <param name="fiat">
-		///     Optional. Required if currencyType is <see cref="CurrencyTypes.Fiat" />. Fiat currency code.
+		///     Optional. Required if currencyType is <see cref="CurrencyTypes.fiat" />. Fiat currency code.
 		///     Supported fiat currencies from <see cref="Assets" />
 		/// </param>
 		/// <param name="accepted_assets">
 		///     Optional. List of cryptocurrency alphabetic codes. Assets which can be used to pay the invoice.
-		///     Available only if currencyType is <see cref="CurrencyTypes.Fiat" />. Supported assets from <see cref="Assets" />.
+		///     Available only if currencyType is <see cref="CurrencyTypes.fiat" />. Supported assets from <see cref="Assets" />.
 		///     Defaults to all currencies.
 		/// </param>
 		/// <param name="description">
@@ -67,7 +67,7 @@ namespace CryptoPay.Requests {
 		/// </param>
 		public CreateInvoiceRequest(
 			double amount,
-			CurrencyTypes currency_type = CurrencyTypes.Crypto,
+			CurrencyTypes currency_type = CurrencyTypes.crypto,
 			string asset = default,
 			string fiat = default,
 			IEnumerable<string> accepted_assets = default,
@@ -81,7 +81,7 @@ namespace CryptoPay.Requests {
 			int expires_in = 2678400)
 				: base("createInvoice") {
 			CurrencyType = currency_type;
-			Amount = amount;
+			Amount = amount.ToString();
 			Asset = asset;
 			Fiat = fiat;
 			AcceptedAssets = accepted_assets;
@@ -107,7 +107,7 @@ namespace CryptoPay.Requests {
 
 		/// <inheritdoc />
 		[JsonRequired]
-		public double Amount { get; set; }
+		public string Amount { get; set; }
 
 		/// <inheritdoc />
 		public string Description { get; set; }

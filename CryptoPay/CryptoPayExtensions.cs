@@ -38,21 +38,21 @@ namespace CryptoPay {
 		/// </param>
 		/// <param name="amount">Amount of the invoice in float. For example: 125.50.</param>
 		/// <param name="currency_type">
-		///     Optional. Type of the price, can be <see cref="CurrencyTypes.Crypto" /> or
-		///     <see cref="CurrencyTypes.Fiat" />. Defaults to <see cref="CurrencyTypes.Crypto" />.
+		///     Optional. Type of the price, can be <see cref="CurrencyTypes.crypto" /> or
+		///     <see cref="CurrencyTypes.fiat" />. Defaults to <see cref="CurrencyTypes.crypto" />.
 		/// </param>
 		/// <param name="asset">
-		///     Optional. Required if currencyType is <see cref="CurrencyTypes.Crypto" />. Cryptocurrency alphabetic code.
+		///     Optional. Required if currencyType is <see cref="CurrencyTypes.crypto" />. Cryptocurrency alphabetic code.
 		///     <remarks>
 		///         Due to the fact that the list of available currencies in the CryptoPay service is constantly changing,
 		///         utilizing <see cref="Assets" /> becomes ineffective. However, you can resort to using Assets.BTC.ToString()
 		///         instead.
 		///     </remarks>
 		/// </param>
-		/// <param name="fiats">Optional. Required if currencyType is <see cref="CurrencyTypes.Fiat" />. Fiat currency code.</param>
+		/// <param name="fiats">Optional. Required if currencyType is <see cref="CurrencyTypes.fiat" />. Fiat currency code.</param>
 		/// <param name="accepted_assets">
 		///     Optional. List of cryptocurrency alphabetic codes. Assets which can be used to pay the invoice.
-		///     Available only if currencyType is <see cref="CurrencyTypes.Fiat" />. Supported assets from <see cref="Assets" />.
+		///     Available only if currencyType is <see cref="CurrencyTypes.fiat" />. Supported assets from <see cref="Assets" />.
 		///     Defaults to all currencies.
 		/// </param>
 		/// <param name="description">
@@ -93,7 +93,7 @@ namespace CryptoPay {
 		public static async Task<Invoice> CreateInvoiceAsync(
 			this ICryptoPayClient crypto_pay_client_client,
 			double amount,
-			CurrencyTypes currency_type = CurrencyTypes.Crypto,
+			CurrencyTypes currency_type = CurrencyTypes.crypto,
 			string asset = default,
 			string fiats = default,
 			IEnumerable<string> accepted_assets = default,
