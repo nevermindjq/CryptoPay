@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using CryptoPay.Types.Update;
+
 namespace CryptoPay.Types {
 	/// <summary>
 	///     List of <see cref="Invoice" />. You can get invoices use

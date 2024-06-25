@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Check {
 	/// <summary>
 	///     This class have to manage checks by using the app.
 	/// </summary>

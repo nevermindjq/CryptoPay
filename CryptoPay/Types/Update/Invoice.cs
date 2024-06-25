@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+using CryptoPay.Converters;
+using CryptoPay.Types.Abstractions;
+using CryptoPay.Types.Currency;
+
+namespace CryptoPay.Types.Update {
 	/// <inheritdoc />
 	public sealed class Invoice : IInvoice {
 		#region Supported
@@ -28,8 +32,8 @@ namespace CryptoPay.Types {
         public string Asset { get; set; }
 
 		/// <inheritdoc />
-        [JsonPropertyName("amount")]
-        public string Amount { get; set; }
+        [JsonPropertyName("amount"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double Amount { get; set; }
 
 		/// <summary>
 		///     Optional. Cryptocurrency alphabetic code for which the invoice was paid.
@@ -44,8 +48,8 @@ namespace CryptoPay.Types {
 		///     Available only if <see cref="CurrencyType" /> is <see cref="CurrencyTypes.fiat" /> and status is
 		///     <see cref="Statuses.paid" />.
 		/// </summary>
-        [JsonPropertyName("paid_amount")]
-        public string PaidAmount { get; set; }
+        [JsonPropertyName("paid_amount"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double PaidAmount { get; set; }
 
 		/// <summary>
 		///     Optional. Asset of service fees charged when the invoice was paid.
@@ -58,8 +62,8 @@ namespace CryptoPay.Types {
 		///     Optional. Amount of service fees charged when the invoice was paid.
 		///     Available only if status is <see cref="Statuses.paid" />.
 		/// </summary>
-        [JsonPropertyName("fee_amount")]
-        public string FeeAmount { get; set; }
+        [JsonPropertyName("fee_amount"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double FeeAmount { get; set; }
 
 		/// <summary>
 		///     Optional. Amount of charged service fees.
@@ -70,8 +74,8 @@ namespace CryptoPay.Types {
 		/// <summary>
 		///		TODO add documentation
 		/// </summary>
-        [JsonPropertyName("fee_in_usd")]
-        public string FeeInUsd { get; set; }
+        [JsonPropertyName("fee_in_usd"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double FeeInUsd { get; set; }
 
 		/// <summary>
 		///     URL should be presented to the user to pay the invoice.
@@ -128,14 +132,14 @@ namespace CryptoPay.Types {
 		/// <summary>
 		///     Optional. Price of the asset in USD. Available only if status is <see cref="Statuses.paid" />.
 		/// </summary>
-        [JsonPropertyName("paid_usd_rate")]
-        public string PaidUsdRate { get; set; }
+        [JsonPropertyName("paid_usd_rate"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double PaidUsdRate { get; set; }
 
 		/// <summary>
 		///     Optional. Price of the asset in USD at the time the invoice was paid.
 		/// </summary>
-        [JsonPropertyName("usd_rate")]
-        public string UsdRate { get; set; }
+        [JsonPropertyName("usd_rate"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+        public double UsdRate { get; set; }
 
 		/// <summary>
 		///     Optional. Date the invoice was paid in Unix time.
@@ -176,8 +180,8 @@ namespace CryptoPay.Types {
 		///     Available only if the value of the field <see cref="CurrencyType" /> is <see cref="CurrencyTypes.fiat" /> and the
 		///     value of the field status is <see cref="Statuses.paid" />.
 		/// </summary>
-		[JsonPropertyName("paid_fiat_rate")]
-		public string PaidFiatRate { get; set; }
+		[JsonPropertyName("paid_fiat_rate"), JsonConverter(typeof(JsonStringToDoubleConverter))]
+		public double PaidFiatRate { get; set; }
 		
 		/// <inheritdoc />
 		[JsonPropertyName("description")]

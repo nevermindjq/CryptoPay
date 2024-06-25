@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Check {
 	/// <summary>
 	///     Object include list of <see cref="Check" />.
 	/// </summary>

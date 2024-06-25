@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+using CryptoPay.Types.Abstractions;
+
+namespace CryptoPay.Types.Transfer {
 	/// <inheritdoc />
 	public sealed class Transfer : ITransfer {
 		/// <summary>

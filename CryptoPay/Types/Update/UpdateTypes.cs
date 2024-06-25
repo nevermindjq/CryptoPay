@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 
 #pragma warning disable CS1591
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Update {
 	/// <summary>
 	///     Type of <see cref="Update" />.
 	/// </summary>

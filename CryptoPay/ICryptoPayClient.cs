@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-using CryptoPay.Exceptions;
+using CryptoPay.Extensions;
 using CryptoPay.Requests.Base;
 
 namespace CryptoPay {

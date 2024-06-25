@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace CryptoPay.Types {
+using CryptoPay.Types.Currency;
+
+namespace CryptoPay.Types.Abstractions {
 	/// <summary>
 	///     Invoice. You can get invoice use <see cref="CryptoPay.CryptoPayExtensions.CreateInvoiceAsync" />
 	/// </summary>
@@ -19,7 +21,7 @@ namespace CryptoPay.Types {
 		/// <summary>
 		///     Amount of the invoice.
 		/// </summary>
-		public string Amount { get; set; }
+		public double Amount { get; set; }
 
 		/// <summary>
 		///     Optional. Description for this invoice.

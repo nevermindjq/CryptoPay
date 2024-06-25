@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-using CryptoPay.Types;
+using CryptoPay.Types.Update;
 
 namespace CryptoPay.Requests.Base {
 	/// <summary>

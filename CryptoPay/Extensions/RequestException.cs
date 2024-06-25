@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 using CryptoPay.Types;
 
-namespace CryptoPay.Exceptions {
+namespace CryptoPay.Extensions {
 	/// <summary>
 	///     Exception included <see cref="Error" />
 	/// </summary>

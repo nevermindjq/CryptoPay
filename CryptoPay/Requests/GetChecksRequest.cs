@@ -2,6 +2,7 @@
 
 using CryptoPay.Requests.Base;
 using CryptoPay.Types;
+using CryptoPay.Types.Check;
 
 namespace CryptoPay.Requests {
 	/// <summary>

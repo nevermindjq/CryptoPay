@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Check {
 #pragma warning disable CS1591
 
 	/// <summary>

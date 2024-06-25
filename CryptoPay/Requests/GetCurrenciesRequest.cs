@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using CryptoPay.Requests.Base;
-using CryptoPay.Types;
+using CryptoPay.Types.Currency;
 
 namespace CryptoPay.Requests {
 	/// <summary>

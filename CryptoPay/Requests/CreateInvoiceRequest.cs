@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 using CryptoPay.Requests.Base;
 using CryptoPay.Types;
+using CryptoPay.Types.Abstractions;
+using CryptoPay.Types.Currency;
+using CryptoPay.Types.Update;
 
 namespace CryptoPay.Requests {
 	/// <summary>
@@ -81,7 +84,7 @@ namespace CryptoPay.Requests {
 			int expires_in = 2678400)
 				: base("createInvoice") {
 			CurrencyType = currency_type;
-			Amount = amount.ToString();
+			Amount = amount;
 			Asset = asset;
 			Fiat = fiat;
 			AcceptedAssets = accepted_assets;
@@ -107,7 +110,7 @@ namespace CryptoPay.Requests {
 
 		/// <inheritdoc />
 		[JsonRequired]
-		public string Amount { get; set; }
+		public double Amount { get; set; }
 
 		/// <inheritdoc />
 		public string Description { get; set; }

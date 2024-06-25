@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Update {
 	/// <summary>
 	///     All requests from Crypto Pay API has this JSON object.
 	///     <para />

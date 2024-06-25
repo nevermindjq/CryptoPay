@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-using CryptoPay.Types;
+using CryptoPay.Types.Update;
 
 // ReSharper disable once CheckNamespace
 namespace CryptoPay {
@@ -17,12 +17,12 @@ namespace CryptoPay {
 		/// <param name="token">Your application token from CryptoPay.</param>
 		/// <param name="body">Response <see cref="Update">body</see>.</param>
 		/// <returns><c>true</c> if the header parameter crypto-pay-api-signature equals hash of request body.</returns>
-		public static bool CheckSignature(string signature, string token, Update body) {
+		public static bool CheckSignature(string signature, string token, string body) {
 			using (var sha256_hash = SHA256.Create()) {
 				var secret = sha256_hash.ComputeHash(Encoding.UTF8.GetBytes(token));
 
 				using (var hmac = new HMACSHA256(secret)) {
-					var check_string = Encoding.UTF8.GetBytes(body.ToString());
+					var check_string = Encoding.UTF8.GetBytes(body);
 
 					return Convert.ToHexString(hmac.ComputeHash(check_string)).ToLower() == signature;
 				}

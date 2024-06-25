@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types {
+namespace CryptoPay.Types.Currency {
 	/// <summary>
 	///     Supported currencies.
 	/// </summary>

@@ -2,9 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using CryptoPay.Exceptions;
+using CryptoPay.Extensions;
 using CryptoPay.Requests;
 using CryptoPay.Types;
+using CryptoPay.Types.Check;
+using CryptoPay.Types.Currency;
+using CryptoPay.Types.Transfer;
+using CryptoPay.Types.Update;
 
 namespace CryptoPay {
 	/// <summary>

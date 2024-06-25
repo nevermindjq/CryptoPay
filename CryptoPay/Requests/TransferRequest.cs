@@ -2,6 +2,8 @@
 
 using CryptoPay.Requests.Base;
 using CryptoPay.Types;
+using CryptoPay.Types.Abstractions;
+using CryptoPay.Types.Transfer;
 
 namespace CryptoPay.Requests {
 	/// <summary>

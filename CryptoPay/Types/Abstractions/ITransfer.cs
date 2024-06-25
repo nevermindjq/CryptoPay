@@ -1,4 +1,4 @@
-﻿namespace CryptoPay.Types {
+﻿namespace CryptoPay.Types.Abstractions {
 	/// <summary>
 	///     Transfer. You can get invoice use <see cref="CryptoPay.CryptoPayExtensions.TransferAsync" />
 	/// </summary>
