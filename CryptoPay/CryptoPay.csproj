@@ -3,23 +3,26 @@
     <PropertyGroup>
         <LangVersion>12</LangVersion>
         <Nullable>disable</Nullable>
-        <AssemblyVersion>1.2.0.3</AssemblyVersion>
-        <FileVersion>1.2.0.3</FileVersion>
-        <PackageVersion>1.2.0.3</PackageVersion>
+        
+        <AssemblyVersion>1.2.0.4</AssemblyVersion>
+        <FileVersion>1.2.0.4</FileVersion>
+        <PackageVersion>1.2.0.4</PackageVersion>
+        
         <Title>Crypto Pay Client</Title>
-        <Authors>Alexander Shitov</Authors>
+        <Authors>nevermindjq</Authors>
+        <PackageId>Nevermindjq.CryptoPay</PackageId>
         <Description>Cryptocurrency payment system based on @cryptobot in Telegram</Description>
-        <PackageLicenseUrl></PackageLicenseUrl>
+        
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>package-icon.png</PackageIcon>
-        <RepositoryUrl>https://github.com/WinoGarcia/CryptoPay.git</RepositoryUrl>
         <PackageTags>CryptoPay;Api;CryptoBot;Telegram;Bot</PackageTags>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Copyright>Copyright © CryptoPay.NET 2024</Copyright>
-        <PackageProjectUrl>https://github.com/WinoGarcia/CryptoPay</PackageProjectUrl>
+        
+        <RepositoryUrl>https://github.com/nevermindjq/CryptoPay.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/nevermindjq/CryptoPay</PackageProjectUrl>
+        
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
