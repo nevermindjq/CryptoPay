@@ -4,342 +4,305 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 using CryptoPay.Exceptions;
 using CryptoPay.Requests;
 using CryptoPay.Tests.TestData;
 using CryptoPay.Types;
+
 using Xunit;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 
-namespace CryptoPay.Tests;
+namespace CryptoPay.Tests {
+	public class AvailableMethodsTests {
+		#region Private Methods
 
-public class AvailableMethodsTests
-{
-    #region Public Fields
+		private static void AssertException(RequestException request_exception, HttpStatusCode status_code, Error error) {
+			Assert.NotNull(request_exception);
+			Assert.Equal(status_code, request_exception.HttpStatusCode);
 
-    private readonly CancellationToken cancellationToken = new CancellationTokenSource().Token;
+			var error_exception = request_exception.Error;
+			Assert.NotNull(error_exception);
+			Assert.Equal(error.Code, error_exception.Code);
+			Assert.Equal(error.Name, error_exception.Name);
+		}
 
-    private readonly ICryptoPayClient cryptoPayClient = new CryptoPayClient(
-        CryptoPayTestHelper.Token,
-        apiUrl: CryptoPayTestHelper.ApiUrl);
+		#endregion
 
-    #endregion
+		#region Public Fields
 
-    #region Private Methods
+		private readonly CancellationToken _cancellation_token = new CancellationTokenSource().Token;
 
-    private static void AssertException(RequestException requestException, HttpStatusCode statusCode, Error error)
-    {
-        Assert.NotNull(requestException);
-        Assert.Equal(statusCode, requestException.HttpStatusCode);
+		private readonly ICryptoPayClient _crypto_pay_client = new CryptoPayClient(
+			CryptoPayTestHelper.token,
+			api_url: CryptoPayTestHelper.api_url
+		);
 
-        var errorException = requestException.Error;
-        Assert.NotNull(errorException);
-        Assert.Equal(error.Code, errorException.Code);
-        Assert.Equal(error.Name, errorException.Name);
-    }
+		#endregion
 
-    #endregion
+		/// Enter your own actual values in
+		/// <see cref="CryptoPayTestHelper.token" />
+		/// <see cref="CryptoPayTestHelper.api_url" />
+		/// <see cref="CryptoPayTestHelper.user_id" />
+		/// For test
+		/// <see cref="TransferTest" />
+		/// , you must have test
+		/// <see cref="Assets.TON" />
+		/// > coins in you application wallet.
 
-    /// Enter your own actual values in
-    /// <see cref="CryptoPayTestHelper.Token" />
-    /// <see cref="CryptoPayTestHelper.ApiUrl" />
-    /// <see cref="CryptoPayTestHelper.UserId" />
-    /// For test <see cref="TransferTest"/>, you must have test <see cref="Assets.TON"/>> coins in you application wallet.
+		#region Tests
 
-    #region Tests
+		[Theory, ClassData(typeof(CryptoPayClientData))]
+		public async Task AuthorizationAndGetMeTest(
+			HttpStatusCode status_code,
+			Error error,
+			string token,
+			string api_url) {
+			try {
+				var local_crypto_pay_client = new CryptoPayClient(token, api_url: api_url);
+				var application = await local_crypto_pay_client.GetMeAsync(_cancellation_token);
 
-    [Theory]
-    [ClassData(typeof(CryptoPayClientData))]
-    public async Task AuthorizationAndGetMeTest(
-        HttpStatusCode statusCode,
-        Error error,
-        string token,
-        string apiUrl)
-    {
-        try
-        {
-            var localCryptoPayClient = new CryptoPayClient(token, apiUrl: apiUrl);
-            var application = await localCryptoPayClient.GetMeAsync(this.cancellationToken);
+				Assert.NotNull(application);
+				Assert.NotEmpty(application.Name);
+				Assert.NotEmpty(application.PaymentProcessingBotUsername);
+				Assert.Equal(local_crypto_pay_client.AppId, application.AppId);
+			} catch (ArgumentNullException argument_null_exception) {
+				Assert.NotNull(argument_null_exception);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(application);
-            Assert.NotEmpty(application.Name);
-            Assert.NotEmpty(application.PaymentProcessingBotUsername);
-            Assert.Equal(localCryptoPayClient.AppId, application.AppId);
-        }
-        catch (ArgumentNullException argumentNullException)
-        {
-            Assert.NotNull(argumentNullException);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(CreateInvoiceData))]
+		public async Task CreateInvoiceTest(HttpStatusCode status_code, Error error, CreateInvoiceRequest invoice_request) {
+			try {
+				var invoice = await _crypto_pay_client.CreateInvoiceAsync(
+					invoice_request.Amount,
+					invoice_request.CurrencyType,
+					invoice_request.Asset,
+					invoice_request.Fiat,
+					invoice_request.AcceptedAssets,
+					invoice_request.Description,
+					invoice_request.HiddenMessage,
+					invoice_request.PaidBtnName,
+					invoice_request.PaidBtnUrl,
+					invoice_request.Payload,
+					invoice_request.AllowComments!.Value,
+					invoice_request.AllowAnonymous!.Value,
+					invoice_request.ExpiresIn,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(CreateInvoiceData))]
-    public async Task CreateInvoiceTest(HttpStatusCode statusCode, Error error, CreateInvoiceRequest invoiceRequest)
-    {
-        try
-        {
-            var invoice = await this.cryptoPayClient.CreateInvoiceAsync(
-                invoiceRequest.Amount,
-                invoiceRequest.CurrencyType,
-                invoiceRequest.Asset,
-                invoiceRequest.Fiat,
-                invoiceRequest.AcceptedAssets,
-                invoiceRequest.Description,
-                invoiceRequest.HiddenMessage,
-                invoiceRequest.PaidBtnName,
-                invoiceRequest.PaidBtnUrl,
-                invoiceRequest.Payload,
-                invoiceRequest.AllowComments!.Value,
-                invoiceRequest.AllowAnonymous!.Value,
-                invoiceRequest.ExpiresIn,
-                this.cancellationToken);
+				Assert.NotNull(invoice);
+				Assert.NotNull(invoice.PayUrl);
+				Assert.NotNull(invoice.Hash);
+				Assert.Equal(invoice_request.Amount, invoice.Amount);
+				Assert.Equal(invoice_request.CurrencyType, invoice.CurrencyType);
+				Assert.Equal(invoice_request.Asset, invoice.Asset);
+				Assert.Equal(AssetsHelper.TryParse(invoice_request.Asset), AssetsHelper.TryParse(invoice.Asset));
+				Assert.Equal(invoice_request.Fiat, invoice.Fiat);
+				// Assert.Equal(invoiceRequest.AcceptedAssets, invoice.AcceptedAssets);
+				Assert.Equal(invoice_request.Description, invoice.Description);
+				Assert.Equal(invoice_request.HiddenMessage, invoice.HiddenMessage);
+				Assert.Equal(invoice_request.PaidBtnName, invoice.PaidBtnName);
+				Assert.Equal(invoice_request.PaidBtnUrl, invoice.PaidBtnUrl);
+				Assert.Equal(invoice_request.Payload, invoice.Payload);
+				Assert.Equal(invoice_request.AllowComments!.Value, invoice.AllowComments);
+				Assert.Equal(invoice_request.AllowAnonymous!.Value, invoice.AllowAnonymous);
+				Assert.Equal(invoice.CreatedAt.AddSeconds(invoice_request.ExpiresIn).ToString("g"), invoice.ExpirationDate?.ToString("g"));
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(invoice);
-            Assert.NotNull(invoice.PayUrl);
-            Assert.NotNull(invoice.Hash);
-            Assert.Equal(invoiceRequest.Amount, invoice.Amount);
-            Assert.Equal(invoiceRequest.CurrencyType, invoice.CurrencyType);
-            Assert.Equal(invoiceRequest.Asset, invoice.Asset);
-            Assert.Equal(AssetsHelper.TryParse(invoiceRequest.Asset), AssetsHelper.TryParse(invoice.Asset));
-            Assert.Equal(invoiceRequest.Fiat, invoice.Fiat);
-            // Assert.Equal(invoiceRequest.AcceptedAssets, invoice.AcceptedAssets);
-            Assert.Equal(invoiceRequest.Description, invoice.Description);
-            Assert.Equal(invoiceRequest.HiddenMessage, invoice.HiddenMessage);
-            Assert.Equal(invoiceRequest.PaidBtnName, invoice.PaidBtnName);
-            Assert.Equal(invoiceRequest.PaidBtnUrl, invoice.PaidBtnUrl);
-            Assert.Equal(invoiceRequest.Payload, invoice.Payload);
-            Assert.Equal(invoiceRequest.AllowComments!.Value, invoice.AllowComments);
-            Assert.Equal(invoiceRequest.AllowAnonymous!.Value, invoice.AllowAnonymous);
-            Assert.Equal(invoice.CreatedAt.AddSeconds(invoiceRequest.ExpiresIn).ToString("g"), invoice.ExpirationDate?.ToString("g"));
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Fact]
+		public async Task GetBalanceTest() {
+			var balance = await _crypto_pay_client.GetBalanceAsync(_cancellation_token);
 
-    [Fact]
-    public async Task GetBalanceTest()
-    {
-        var balance = await this.cryptoPayClient.GetBalanceAsync(this.cancellationToken);
+			Assert.NotNull(balance);
+			Assert.True(balance.Any());
+		}
 
-        Assert.NotNull(balance);
-        Assert.True(balance.Any());
-    }
+		[Fact]
+		public async Task GetExchangeRatesTest() {
+			var exchange_rates = await _crypto_pay_client.GetExchangeRatesAsync(_cancellation_token);
 
-    [Fact]
-    public async Task GetExchangeRatesTest()
-    {
-        var exchangeRates = await this.cryptoPayClient.GetExchangeRatesAsync(this.cancellationToken);
+			Assert.NotNull(exchange_rates);
+			Assert.True(exchange_rates.Any());
+		}
 
-        Assert.NotNull(exchangeRates);
-        Assert.True(exchangeRates.Any());
-    }
+		[Fact]
+		public async Task GetCurrenciesTest() {
+			var currencies = await _crypto_pay_client.GetCurrenciesAsync(_cancellation_token);
 
-    [Fact]
-    public async Task GetCurrenciesTest()
-    {
-        var currencies = await this.cryptoPayClient.GetCurrenciesAsync(this.cancellationToken);
+			Assert.NotNull(currencies);
+			Assert.True(currencies.Any());
+		}
 
-        Assert.NotNull(currencies);
-        Assert.True(currencies.Any());
-    }
+		/// <summary>
+		///     For this test, you must have test coins.
+		/// </summary>
+		[Theory, ClassData(typeof(TransferData))]
+		public async Task TransferTest(HttpStatusCode status_code, Error error, TransferRequest transfer_request) {
+			try {
+				var transfer = await _crypto_pay_client.TransferAsync(
+					transfer_request.UserId,
+					transfer_request.Asset,
+					transfer_request.Amount,
+					transfer_request.SpendId,
+					transfer_request.Comment,
+					transfer_request.DisableSendNotification,
+					_cancellation_token
+				);
 
-    /// <summary>
-    /// For this test, you must have test coins.
-    /// </summary>
-    [Theory]
-    [ClassData(typeof(TransferData))]
-    public async Task TransferTest(HttpStatusCode statusCode, Error error, TransferRequest transferRequest)
-    {
-        try
-        {
-            var transfer = await this.cryptoPayClient.TransferAsync(
-                transferRequest.UserId,
-                transferRequest.Asset,
-                transferRequest.Amount,
-                transferRequest.SpendId,
-                transferRequest.Comment,
-                transferRequest.DisableSendNotification,
-                this.cancellationToken);
+				Assert.NotNull(transfer);
+				Assert.Equal(transfer_request.UserId, transfer.UserId);
+				Assert.Equal(transfer_request.Asset, transfer.Asset);
+				Assert.Equal(AssetsHelper.TryParse(transfer_request.Asset), AssetsHelper.TryParse(transfer_request.Asset));
+				Assert.Equal(transfer_request.Amount, transfer.Amount);
+				//Assert.Equal(transferRequest.Comment, transfer.Comment);
+				Assert.Equal(transfer_request.DisableSendNotification, transfer_request.DisableSendNotification);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(transfer);
-            Assert.Equal(transferRequest.UserId, transfer.UserId);
-            Assert.Equal(transferRequest.Asset, transfer.Asset);
-            Assert.Equal(AssetsHelper.TryParse(transferRequest.Asset), AssetsHelper.TryParse(transferRequest.Asset));
-            Assert.Equal(transferRequest.Amount, transfer.Amount);
-            //Assert.Equal(transferRequest.Comment, transfer.Comment);
-            Assert.Equal(transferRequest.DisableSendNotification, transferRequest.DisableSendNotification);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		/// <summary>
+		///     For this test, you must have test coins.
+		/// </summary>
+		[Theory, ClassData(typeof(GetTransfersData))]
+		public async Task GetTransfersTest(HttpStatusCode status_code, Error error, TransferRequest transfer_request) {
+			try {
+				var transfer = await _crypto_pay_client.TransferAsync(
+					transfer_request.UserId,
+					transfer_request.Asset,
+					transfer_request.Amount,
+					transfer_request.SpendId,
+					transfer_request.Comment,
+					transfer_request.DisableSendNotification,
+					_cancellation_token
+				);
 
-    /// <summary>
-    /// For this test, you must have test coins.
-    /// </summary>
-    [Theory]
-    [ClassData(typeof(GetTransfersData))]
-    public async Task GetTransfersTest(HttpStatusCode statusCode, Error error, TransferRequest transferRequest)
-    {
-        try
-        {
-            var transfer = await this.cryptoPayClient.TransferAsync(
-                transferRequest.UserId,
-                transferRequest.Asset,
-                transferRequest.Amount,
-                transferRequest.SpendId,
-                transferRequest.Comment,
-                transferRequest.DisableSendNotification,
-                this.cancellationToken);
+				var transfers = await _crypto_pay_client.GetTransfersAsync(cancellation_token: _cancellation_token);
 
-            var transfers = await this.cryptoPayClient.GetTransfersAsync(cancellationToken: this.cancellationToken);
+				Assert.NotNull(transfer);
 
-            Assert.NotNull(transfer);
+				Assert.NotNull(transfers);
+				Assert.True(transfers.Items.Any());
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(transfers);
-            Assert.True(transfers.Items.Any());
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(GetInvoicesData))]
+		public async Task GetInvoicesTest(
+			HttpStatusCode status_code,
+			Error error,
+			IList<string> assets,
+			IList<long> invoice_ids,
+			Statuses? status,
+			int offset,
+			int count) {
+			try {
+				var invoices = await _crypto_pay_client.GetInvoicesAsync(
+					assets,
+					invoice_ids,
+					status,
+					offset,
+					count,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(GetInvoicesData))]
-    public async Task GetInvoicesTest(
-        HttpStatusCode statusCode,
-        Error error,
-        IList<string> assets,
-        IList<long> invoiceIds,
-        Statuses? status,
-        int offset,
-        int count)
-    {
-        try
-        {
-            var invoices = await this.cryptoPayClient.GetInvoicesAsync(
-                assets,
-                invoiceIds,
-                status,
-                offset,
-                count,
-                this.cancellationToken);
+				Assert.NotNull(invoices);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(invoices);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(DeleteInvoicesData))]
+		public async Task DeleteInvoiceTest(HttpStatusCode status_code, Error error, CreateInvoiceRequest invoice_request) {
+			try {
+				var invoice = await _crypto_pay_client.CreateInvoiceAsync(
+					invoice_request.Amount,
+					invoice_request.CurrencyType,
+					invoice_request.Asset,
+					invoice_request.Fiat,
+					invoice_request.AcceptedAssets,
+					invoice_request.Description,
+					invoice_request.HiddenMessage,
+					invoice_request.PaidBtnName,
+					invoice_request.PaidBtnUrl,
+					invoice_request.Payload,
+					invoice_request.AllowComments!.Value,
+					invoice_request.AllowAnonymous!.Value,
+					invoice_request.ExpiresIn,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(DeleteInvoicesData))]
-    public async Task DeleteInvoiceTest(HttpStatusCode statusCode, Error error, CreateInvoiceRequest invoiceRequest)
-    {
-        try
-        {
-            var invoice = await this.cryptoPayClient.CreateInvoiceAsync(
-                invoiceRequest.Amount,
-                invoiceRequest.CurrencyType,
-                invoiceRequest.Asset,
-                invoiceRequest.Fiat,
-                invoiceRequest.AcceptedAssets,
-                invoiceRequest.Description,
-                invoiceRequest.HiddenMessage,
-                invoiceRequest.PaidBtnName,
-                invoiceRequest.PaidBtnUrl,
-                invoiceRequest.Payload,
-                invoiceRequest.AllowComments!.Value,
-                invoiceRequest.AllowAnonymous!.Value,
-                invoiceRequest.ExpiresIn,
-                this.cancellationToken);
+				var deleted = await _crypto_pay_client.DeleteInvoiceAsync(invoice.InvoiceId, _cancellation_token);
 
-            var deleted = await this.cryptoPayClient.DeleteInvoiceAsync(invoice.InvoiceId, this.cancellationToken);
+				Assert.NotNull(invoice);
+				Assert.True(deleted);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(invoice);
-            Assert.True(deleted);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(CreateCheckData))]
+		public async Task CreateCheckTest(HttpStatusCode status_code, Error error, CreateCheckRequest create_check_request) {
+			try {
+				var check = await _crypto_pay_client.CreateCheckAsync(
+					create_check_request.Asset,
+					create_check_request.Amount,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(CreateCheckData))]
-    public async Task CreateCheckTest(HttpStatusCode statusCode, Error error, CreateCheckRequest createCheckRequest)
-    {
-        try
-        {
-            var check = await this.cryptoPayClient.CreateCheckAsync(
-                createCheckRequest.Asset,
-                createCheckRequest.Amount,
-                this.cancellationToken);
+				Assert.NotNull(check);
+				Assert.Equal(create_check_request.Asset, check.Asset);
+				Assert.Equal(AssetsHelper.TryParse(create_check_request.Asset), AssetsHelper.TryParse(check.Asset));
+				Assert.Equal(create_check_request.Amount, check.Amount);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(check);
-            Assert.Equal(createCheckRequest.Asset, check.Asset);
-            Assert.Equal(AssetsHelper.TryParse(createCheckRequest.Asset), AssetsHelper.TryParse(check.Asset));
-            Assert.Equal(createCheckRequest.Amount, check.Amount);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(CreateCheckData))]
+		public async Task DeleteCheckTest(HttpStatusCode status_code, Error error, CreateCheckRequest create_check_request) {
+			try {
+				var check = await _crypto_pay_client.CreateCheckAsync(
+					create_check_request.Asset,
+					create_check_request.Amount,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(CreateCheckData))]
-    public async Task DeleteCheckTest(HttpStatusCode statusCode, Error error, CreateCheckRequest createCheckRequest)
-    {
-        try
-        {
-            var check = await this.cryptoPayClient.CreateCheckAsync(
-                createCheckRequest.Asset,
-                createCheckRequest.Amount,
-                this.cancellationToken);
+				var deleted = await _crypto_pay_client.DeleteCheckAsync(check.CheckId, _cancellation_token);
 
-            var deleted = await this.cryptoPayClient.DeleteCheckAsync(check.CheckId, this.cancellationToken);
+				Assert.True(deleted);
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.True(deleted);
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
+		[Theory, ClassData(typeof(CreateCheckData))]
+		public async Task GetCheckTest(HttpStatusCode status_code, Error error, CreateCheckRequest create_check_request) {
+			try {
+				var check = await _crypto_pay_client.CreateCheckAsync(
+					create_check_request.Asset,
+					create_check_request.Amount,
+					_cancellation_token
+				);
 
-    [Theory]
-    [ClassData(typeof(CreateCheckData))]
-    public async Task GetCheckTest(HttpStatusCode statusCode, Error error, CreateCheckRequest createCheckRequest)
-    {
-        try
-        {
-            var check = await this.cryptoPayClient.CreateCheckAsync(
-                createCheckRequest.Asset,
-                createCheckRequest.Amount,
-                this.cancellationToken);
+				var checks = await _crypto_pay_client.GetChecksAsync(cancellation_token: _cancellation_token);
 
-            var checks = await this.cryptoPayClient.GetChecksAsync(cancellationToken: this.cancellationToken);
+				Assert.NotNull(check);
+				Assert.NotNull(checks);
+				Assert.True(checks.Items.Any());
+			} catch (RequestException request_exception) {
+				AvailableMethodsTests.AssertException(request_exception, status_code, error);
+			}
+		}
 
-            Assert.NotNull(check);
-            Assert.NotNull(checks);
-            Assert.True(checks.Items.Any());
-        }
-        catch (RequestException requestException)
-        {
-            AssertException(requestException, statusCode, error);
-        }
-    }
-
-    #endregion
+		#endregion
+	}
 }

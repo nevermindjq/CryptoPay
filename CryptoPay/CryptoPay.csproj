@@ -3,23 +3,23 @@
     <PropertyGroup>
         <LangVersion>12</LangVersion>
         <Nullable>disable</Nullable>
-        
+
         <AssemblyVersion>1.2.0.4</AssemblyVersion>
         <FileVersion>1.2.0.4</FileVersion>
         <PackageVersion>1.2.0.4</PackageVersion>
-        
+
         <Title>Crypto Pay Client</Title>
         <Authors>nevermindjq</Authors>
         <PackageId>Nevermindjq.CryptoPay</PackageId>
         <Description>Cryptocurrency payment system based on @cryptobot in Telegram</Description>
-        
+
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>package-icon.png</PackageIcon>
         <PackageTags>CryptoPay;Api;CryptoBot;Telegram;Bot</PackageTags>
-        
+
         <RepositoryUrl>https://github.com/nevermindjq/CryptoPay.git</RepositoryUrl>
         <PackageProjectUrl>https://github.com/nevermindjq/CryptoPay</PackageProjectUrl>
-        
+
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -41,7 +41,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Text.Json" Version="8.0.2" />
+        <PackageReference Include="System.Text.Json" Version="8.0.2"/>
     </ItemGroup>
 
 </Project>

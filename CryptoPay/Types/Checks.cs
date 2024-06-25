@@ -2,32 +2,30 @@
 using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace CryptoPay.Types;
+namespace CryptoPay.Types {
+	/// <summary>
+	///     Object include list of <see cref="Check" />.
+	/// </summary>
+	public sealed class Checks {
+		#region Constructors
 
-/// <summary>
-/// Object include list of <see cref="Check"/>.
-/// </summary>
-public sealed class Checks
-{
-    #region Constructors
+		/// <summary>
+		///     Initializes a new object include list of <see cref="Check" />.
+		/// </summary>
+		public Checks() {
+			Items = Enumerable.Empty<Check>();
+		}
 
-    /// <summary>
-    /// Initializes a new object include list of <see cref="Check"/>.
-    /// </summary>
-    public Checks()
-    {
-        this.Items = Enumerable.Empty<Check>();
-    }
+		#endregion
 
-    #endregion
+		#region Public Fields
 
-    #region Public Fields
+		/// <summary>
+		///     List of <see cref="Check" />.
+		/// </summary>
+		[JsonRequired]
+		public IEnumerable<Check> Items { get; set; }
 
-    /// <summary>
-    /// List of <see cref="Check"/>.
-    /// </summary>
-    [JsonRequired]
-    public IEnumerable<Check> Items { get; set; }
-    
-    #endregion
+		#endregion
+	}
 }
