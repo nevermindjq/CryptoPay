@@ -4,9 +4,9 @@
         <LangVersion>12</LangVersion>
         <Nullable>disable</Nullable>
 
-        <AssemblyVersion>1.2.0.5</AssemblyVersion>
-        <FileVersion>1.2.0.5</FileVersion>
-        <PackageVersion>1.2.0.5</PackageVersion>
+        <AssemblyVersion>1.2.0.6</AssemblyVersion>
+        <FileVersion>1.2.0.6</FileVersion>
+        <PackageVersion>1.2.0.6</PackageVersion>
 
         <Title>Crypto Pay Client</Title>
         <Authors>nevermindjq</Authors>
