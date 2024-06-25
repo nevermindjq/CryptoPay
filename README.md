@@ -1,5 +1,5 @@
 ![CryptoPay](/header.png)
-[![package](https://img.shields.io/nuget/vpre/CryptoPay.svg?label=CryptoPay%20Package&style=flat-square)](https://www.nuget.org/packages/CryptoPay)
+[![package](https://img.shields.io/nuget/vpre/CryptoPay.svg?label=CryptoPay%20Package&style=flat-square)](https://www.nuget.org/packages/Nevermindjq.CryptoPay)
 [![Bot API Version](https://img.shields.io/badge/CryptoPay%20API-1.2%20(November%2024,%202023)-f36caf.svg?style=flat-square)](https://help.crypt.bot/crypto-pay-api)
 [![documentations](https://img.shields.io/badge/Documentations-Book-Green.svg?style=flat-square)](https://help.crypt.bot/crypto-pay-api)
 
@@ -12,7 +12,7 @@ This **.NET** library help you to work with **Crypto Pay** via [Crypto Pay API](
 
 ## Install
 
-Use the [nuget package](https://www.nuget.org/packages/CryptoPay/).
+Use the [nuget package](https://www.nuget.org/packages/Nevermindjq.CryptoPay).
 
 ## Usage
 
@@ -50,13 +50,14 @@ You can find all available methods in the [documentation](https://help.crypt.bot
 Also, you can create invoice with supported [assets](#Assets) and [paid button names](#Paid-Button-Names):
 
 ```csharp
-var invoice = await cryptoPayClient.CreateInvoiceAsync(
+var invoice = await client.CreateInvoiceAsync(
     Assets.BNB,
     1.505,
     description: "kitten",
     paid_btn_name: PaidButtonNames.viewItem,
     paid_btn_url: "https://placekitten.com/150",
-    cancellationToken: cancellationToken);
+    cancellationToken: cancellationToken
+);
 ```
 
 ### Webhooks
@@ -73,20 +74,15 @@ from `crypto-pay-api-signature`
 
 ```csharp
 [HttpPost("{token}")]
-public async Task<IActionResult> PostAsync(
-    [FromBody] Update update, 
-    string token, 
-    CancellationToken cancellationToken = default)
+public async Task<IActionResult> PostAsync([FromBody] Update update, string token)
 {
-    if (update is not null &&
-        this.HttpContext.Request.Headers.TryGetValue("crypto-pay-api-signature", out var signature) &&
-        CryptoPayHelper.CheckSignature(signature, token, update) &&
-        update.UpdateType == UpdateTypes.invoice_paid)
-    {
-        return this.Ok();
+    if (!HttpContext.Request.Headers.TryGetValue("crypto-pay-api-signature", out var signature) || !CryptoPayHelper.CheckSignature(signature, token, update)) {
+        return BadRequest();
     }
+    
+    // TODO
 
-    return this.BadRequest();
+    return Ok();
 }
 ```
 
