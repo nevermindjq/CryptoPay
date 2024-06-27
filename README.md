@@ -75,15 +75,22 @@ from `crypto-pay-api-signature`
 
 ```csharp
 [HttpPost("{token}")]
-public async Task<IActionResult> PostAsync([FromBody] Update update, string token)
-{
-    if (!HttpContext.Request.Headers.TryGetValue("crypto-pay-api-signature", out var signature) || !CryptoPayHelper.CheckSignature(signature, token, update)) {
-        return BadRequest();
-    }
+public async Task<IActionResult> PostAsync([FromRoute] string token) {
+	string content;
     
+	using (var reader = new StreamReader(Request.Body, leaveOpen: true)) {
+		content = await reader.ReadToEndAsync();
+	}
+	
+	if (!HttpContext.Request.Headers.TryGetValue("crypto-pay-api-signature", out var signature) || !CryptoPayHelper.CheckSignature(signature, token, content)) {
+		return Ok();
+	}
+    
+	var update = JsonSerializer.Deserialize<Update>(content)!;
+       
     // TODO
-
-    return Ok();
+       
+	return Ok();
 }
 ```
 
